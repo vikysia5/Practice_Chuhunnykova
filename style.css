@@ -121,7 +121,7 @@ button {
 
 button:hover {
     cursor: pointer;
-    background-color: #ee483f;;
+    background-color: #ee483f;
 }
 
 form button {
@@ -142,10 +142,15 @@ form button {
 .todo-list {
     min-width: 25%;
     list-style: none;
+    overflow-x: hidden;
     overflow-y: scroll;
     height:255px;
     max-width: 600px;
 }
+
+.todo-list::-webkit-scrollbar {
+    display: none;
+   }
 
 .todo {
     margin: 1rem;
