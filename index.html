@@ -18,26 +18,24 @@
         <h1 id="title">To-do list<div id="border"></div></h1>
     </div>
  
+    <!--поле-->
   <div id="form">
         <form>
             <input class="todo-input" type="text" placeholder="Додати завдання...">
             <button class="todo-btn" type="submit">Записати!</button>
         </form>
-    </div>
-        <p><span id="datetime"></span></p>
-        <script src="time.js"></script>
-    </div>
+  </div>
 
+        <p><span id="datetime"></span></p>
+
+    <!--cписок-->
   <div id="myList">
-        <ul class="todo-list">
-        </ul>
-    </div>
-    <script src="script.js" type="text/javascript"> </script>
+        <ul class="todo-list"></ul>
+  </div>
     
     <footer>
-        <div>
           <div class="controls">
-            <!-- Кнопки плеера в виде PNG картинок -->
+            <!-- музика -->
             <button id="prev" title="Попередній">
               <img src="images/prev.png" alt="Попередній">
             </button>
@@ -54,10 +52,10 @@
             <div class="track" data-src="music/song2.mp3" ></div>
             <div class="track" data-src="music/song3.mp3"></div>
           </div>
-          <!-- Скрытый аудиоплеер -->
+
           <audio id="audio-player" src="music/song.mp3"></audio>
-        </div>
       </footer>
-      <script src="script.js" type="text/javascript"> </script>
+      
+    <script src="script.js" type="text/javascript"> </script>
 </body>
 </html>

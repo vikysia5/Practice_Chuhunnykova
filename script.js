@@ -1,15 +1,12 @@
-// Selectors
-
 const toDoInput = document.querySelector('.todo-input');
 const toDoBtn = document.querySelector('.todo-btn');
 const toDoList = document.querySelector('.todo-list');
 
-// Event Listeners
-
 toDoBtn.addEventListener('click', addToDo);
 toDoList.addEventListener('click', deletecheck);
 document.addEventListener("DOMContentLoaded", getTodos);
-    
+
+//функція зміни теми
 (function() {
     const themeButton = document.getElementById('theme-btn');
     const themeImg = document.getElementById('theme-img');
@@ -24,24 +21,20 @@ document.addEventListener("DOMContentLoaded", getTodos);
       document.body.classList.remove('theme-rain', 'theme-night', 'theme-sunset');
       document.body.classList.add(`theme-${themes[currentThemeIndex].name}`);
       themeImg.src = themes[currentThemeIndex].img;
-      console.log("Смена темы на:", themes[currentThemeIndex].name);
+      console.log("Зміна теми на:", themes[currentThemeIndex].name);
     });
   })();
 
- 
-  let savedTheme = localStorage.getItem('savedTheme');
+let savedTheme = localStorage.getItem('savedTheme');
 
-// Functions;
+//функція туду
 function addToDo(event) {
-    // Prevents form from submitting / Prevents form from relaoding;
     event.preventDefault();
-
-    // toDo DIV;
   
     const toDoDiv = document.createElement("div");
     toDoDiv.classList.add('todo', `${savedTheme}-todo`);
 
-    // Create LI
+    // создаєм список
     const newToDo = document.createElement('li');
     if (toDoInput.value === '') {
             alert("Напишіть щось!");
@@ -51,43 +44,37 @@ function addToDo(event) {
         newToDo.classList.add('todo-item');
         toDoDiv.appendChild(newToDo);
 
-        // Adding to local storage;
+        //зберігаєм
         savelocal(toDoInput.value);
 
-        // check btn;
+        //перевирка кнопкі btn;
         const checked = document.createElement('button');
         checked.innerHTML = '<i class="fas fa-check"></i>';
         checked.classList.add('check-btn', `${savedTheme}-button`);
         toDoDiv.appendChild(checked);
-        // delete btn;
+        //видаляєм кнопку btn;
         const deleted = document.createElement('button');
         deleted.innerHTML = '<i class="fas fa-trash"></i>';
         deleted.classList.add('delete-btn', `${savedTheme}-button`);
         toDoDiv.appendChild(deleted);
 
-        // Append to list;
+        //додаєм до списку
         toDoList.appendChild(toDoDiv);
 
-        // CLearing the input;
+        //очищаєм ввод
         toDoInput.value = '';
     }
 
 }   
 
-
+//функція видалення
 function deletecheck(event){
-
-    // console.log(event.target);
     const item = event.target;
 
     // delete
     if(item.classList[0] === 'delete-btn')
     {
-        // item.parentElement.remove();
-        // animation
         item.parentElement.classList.add("fall");
-
-        //removing local todos;
         removeLocalTodos(item.parentElement);
 
         item.parentElement.addEventListener('transitionend', function(){
@@ -95,19 +82,16 @@ function deletecheck(event){
         })
     }
 
-    // check
+    //галочка
     if(item.classList[0] === 'check-btn')
     {
         item.parentElement.classList.toggle("completed");
     }
-
-
 }
 
 
-// Saving to local storage:
+//зберігаєм в локалі:
 function savelocal(todo){
-    //Check: if item/s are there;
     let todos;
     if(localStorage.getItem('todos') === null) {
         todos = [];
@@ -120,10 +104,7 @@ function savelocal(todo){
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
-
-
 function getTodos() {
-    //Check: if item/s are there;
     let todos;
     if(localStorage.getItem('todos') === null) {
         todos = [];
@@ -133,36 +114,33 @@ function getTodos() {
     }
 
     todos.forEach(function(todo) {
-        // toDo DIV;
         const toDoDiv = document.createElement("div");
         toDoDiv.classList.add("todo", `${savedTheme}-todo`);
 
-        // Create LI
+        //создаєм список
         const newToDo = document.createElement('li');
         
         newToDo.innerText = todo;
         newToDo.classList.add('todo-item');
         toDoDiv.appendChild(newToDo);
 
-        // check btn;
         const checked = document.createElement('button');
         checked.innerHTML = '<i class="fas fa-check"></i>';
         checked.classList.add("check-btn", `${savedTheme}-button`);
         toDoDiv.appendChild(checked);
-        // delete btn;
+
         const deleted = document.createElement('button');
         deleted.innerHTML = '<i class="fas fa-trash"></i>';
         deleted.classList.add("delete-btn", `${savedTheme}-button`);
         toDoDiv.appendChild(deleted);
 
-        // Append to list;
+        //додаті до списка
         toDoList.appendChild(toDoDiv);
     });
 }
 
 
 function removeLocalTodos(todo){
-    //Check: if item/s are there;
     let todos;
     if(localStorage.getItem('todos') === null) {
         todos = [];
@@ -172,13 +150,11 @@ function removeLocalTodos(todo){
     }
 
     const todoIndex =  todos.indexOf(todo.children[0].innerText);
-    // console.log(todoIndex);
     todos.splice(todoIndex, 1);
-    // console.log(todos);
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
-
+//музика
 document.addEventListener('DOMContentLoaded', function() {
 (function() {
     const audioPlayer = document.getElementById('audio-player');
@@ -202,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function() {
       audioPlayer.src = tracks[currentTrackIndex];
       updateActiveTrack();
       audioPlayer.play();
-      // При запуске воспроизведения меняем иконку play на pause
+      //змина кнопок
       playImg.src = "images/pause.png";
     }
 
@@ -220,12 +196,12 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
 
-// Обновляем иконку, когда начинается воспроизведение
+//обновляєм кнопку стоп
 audioPlayer.addEventListener('play', function() {
   playImg.src = "images/pause.png";
 });
 
-// Обновляем иконку, когда аудио ставится на паузу
+//обновляєм кнопку пуск
 audioPlayer.addEventListener('pause', function() {
   playImg.src = "images/play.png";
 });
@@ -245,3 +221,38 @@ audioPlayer.addEventListener('pause', function() {
     });
   })();
 });
+
+//датачас
+var dt = new Date();
+function getDate()
+{
+    var date = new Date();
+    var day = date.getDay();
+    var month = date.getMonth();
+    var year = date.getFullYear();
+    var hours = date.getHours();
+    var minutes = date.getMinutes();
+    var seconds = date.getSeconds();
+    if(seconds < 10)
+    {
+        seconds = '0' + seconds;
+    }
+    if(minutes < 10)
+    {
+        minutes = '0' + minutes;
+    }
+    if(hours < 10)
+    {
+        hours = '0' + hours;
+    }
+    if(day < 10)
+    {
+        day = '0' + day;
+    }
+    if(month < 10)
+    {
+        month = '0' + month;
+    }
+    document.getElementById('datetime').innerHTML = day + '/' + month + '/' + year + ' ' + hours + ':' + minutes + ':' + seconds;
+}
+setInterval(getDate, 0);
