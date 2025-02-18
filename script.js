@@ -3,25 +3,33 @@
 const toDoInput = document.querySelector('.todo-input');
 const toDoBtn = document.querySelector('.todo-btn');
 const toDoList = document.querySelector('.todo-list');
-const standardTheme = document.querySelector('.standard-theme');
-const lightTheme = document.querySelector('.light-theme');
-const darkerTheme = document.querySelector('.darker-theme');
-
 
 // Event Listeners
 
 toDoBtn.addEventListener('click', addToDo);
 toDoList.addEventListener('click', deletecheck);
 document.addEventListener("DOMContentLoaded", getTodos);
-standardTheme.addEventListener('click', () => changeTheme('rain'));
-lightTheme.addEventListener('click', () => changeTheme('sunset'));
-darkerTheme.addEventListener('click', () => changeTheme('night'));
+    
+(function() {
+    const themeButton = document.getElementById('theme-btn');
+    const themeImg = document.getElementById('theme-img');
+    const themes = [
+      { name: 'rain', img: 'images/rainy-icon.png' },
+      { name: 'sunset', img: 'images/sunny-icon.png' },
+      { name: 'night', img: 'images/night-icon.png' }
+    ];
+    let currentThemeIndex = 0;
+    themeButton.addEventListener('click', function() {
+      currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+      document.body.classList.remove('theme-rain', 'theme-night', 'theme-sunset');
+      document.body.classList.add(`theme-${themes[currentThemeIndex].name}`);
+      themeImg.src = themes[currentThemeIndex].img;
+      console.log("Смена темы на:", themes[currentThemeIndex].name);
+    });
+  })();
 
-// Check if one theme has been set previously and apply it (or std theme if not found):
-let savedTheme = localStorage.getItem('savedTheme');
-savedTheme === null ?
-    changeTheme('rain')
-    : changeTheme(localStorage.getItem('savedTheme'));
+ 
+  let savedTheme = localStorage.getItem('savedTheme');
 
 // Functions;
 function addToDo(event) {
@@ -29,16 +37,16 @@ function addToDo(event) {
     event.preventDefault();
 
     // toDo DIV;
+  
     const toDoDiv = document.createElement("div");
     toDoDiv.classList.add('todo', `${savedTheme}-todo`);
 
     // Create LI
     const newToDo = document.createElement('li');
     if (toDoInput.value === '') {
-            alert("You must write something!");
+            alert("Напишіть щось!");
         } 
     else {
-        // newToDo.innerText = "hey";
         newToDo.innerText = toDoInput.value;
         newToDo.classList.add('todo-item');
         toDoDiv.appendChild(newToDo);
@@ -170,34 +178,70 @@ function removeLocalTodos(todo){
     localStorage.setItem('todos', JSON.stringify(todos));
 }
 
-// Change theme function:
-function changeTheme(color) {
-    localStorage.setItem('savedTheme', color);
-    savedTheme = localStorage.getItem('savedTheme');
 
-    document.body.className = color;
-    // Change blinking cursor for darker theme:
-    color === 'darker' ? 
-        document.getElementById('title').classList.add('darker-title')
-        : document.getElementById('title').classList.remove('darker-title');
+document.addEventListener('DOMContentLoaded', function() {
+(function() {
+    const audioPlayer = document.getElementById('audio-player');
+    const playBtn = document.getElementById('play');
+    const playImg = document.getElementById('play-img');
+    const prevBtn = document.getElementById('prev');
+    const nextBtn = document.getElementById('next');
+    const trackElements = document.querySelectorAll('.track');
+    
+    let currentTrackIndex = 0;
+    const tracks = Array.from(trackElements).map(el => el.getAttribute('data-src'));
 
-    document.querySelector('input').className = `${color}-input`;
-    // Change todo color without changing their status (completed or not):
-    document.querySelectorAll('.todo').forEach(todo => {
-        Array.from(todo.classList).some(item => item === 'completed') ? 
-            todo.className = `todo ${color}-todo completed`
-            : todo.className = `todo ${color}-todo`;
+    function updateActiveTrack() {
+      trackElements.forEach((el, index) => {
+        el.classList.toggle('active', index === currentTrackIndex);
+      });
+    }
+
+    function loadTrack(index) {
+      currentTrackIndex = index;
+      audioPlayer.src = tracks[currentTrackIndex];
+      updateActiveTrack();
+      audioPlayer.play();
+      // При запуске воспроизведения меняем иконку play на pause
+      playImg.src = "images/pause.png";
+    }
+
+    trackElements.forEach((trackEl, index) => {
+      trackEl.addEventListener('click', function() {
+        loadTrack(index);
+      });
     });
-    // Change buttons color according to their type (todo, check or delete):
-    document.querySelectorAll('button').forEach(button => {
-        Array.from(button.classList).some(item => {
-            if (item === 'check-btn') {
-              button.className = `check-btn ${color}-button`;  
-            } else if (item === 'delete-btn') {
-                button.className = `delete-btn ${color}-button`; 
-            } else if (item === 'todo-btn') {
-                button.className = `todo-btn ${color}-button`;
-            }
-        });
+
+    playBtn.addEventListener('click', function() {
+      if (audioPlayer.paused) {
+        audioPlayer.play();
+      } else {
+        audioPlayer.pause();
+      }
     });
-}
+
+// Обновляем иконку, когда начинается воспроизведение
+audioPlayer.addEventListener('play', function() {
+  playImg.src = "images/pause.png";
+});
+
+// Обновляем иконку, когда аудио ставится на паузу
+audioPlayer.addEventListener('pause', function() {
+  playImg.src = "images/play.png";
+});
+
+    prevBtn.addEventListener('click', function() {
+      currentTrackIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+      loadTrack(currentTrackIndex);
+    });
+
+    nextBtn.addEventListener('click', function() {
+      currentTrackIndex = (currentTrackIndex + 1) % tracks.length;
+      loadTrack(currentTrackIndex);
+    });
+
+    audioPlayer.addEventListener('ended', function() {
+      nextBtn.click();
+    });
+  })();
+});
